@@ -1,0 +1,67 @@
+<html>
+    <head>
+
+    </head>
+    <body>
+        <h1>TP 4</h1>
+        <form id="form">
+            <label for="username">Name : </label>
+            <input type="text" name="username" placeholder="Nom"></input>
+            <label for="age">Age : </label>
+            <input type="number" name="age" placeholder="Age"></input>
+            <button>Clique ici si t'es noir</button>
+        </form>
+        <ul id="userlist">
+
+        </ul>
+        <script type="module" >
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js";
+
+            const firebaseConfig = {
+            apiKey: "AIzaSyDwSkXTHOOIzoYkwKaTjM9mq6nf5jsf1x0",
+            authDomain: "tpfirebase-84832.firebaseapp.com",
+            databaseURL: "https://tpfirebase-84832-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "tpfirebase-84832",
+            storageBucket: "tpfirebase-84832.appspot.com",
+            messagingSenderId: "1051493080678",
+            appId: "1:1051493080678:web:4cbc7f364d1386712817a7"
+            };
+
+            const app = initializeApp(firebaseConfig);
+
+            import { getDatabase, ref, set, push, onValue } from 'https://www.gstatic.com/firebasejs/9.14.0/firebase-database.js';
+            const database = getDatabase(app);
+
+            const userRef = ref(database,'users');
+            const userlist = document.querySelector('#userlist')
+
+
+            onValue(userRef,
+                (snapshot) => {
+                    const data = snapshot.val()
+                    userlist.innerHTML = ""
+                    Object.values(data).forEach(element => {
+                        userlist.innerHTML += "<li>"+element.username+" : "+ element.age +" ans</li>"
+                    });
+                }
+            )
+
+            
+            
+
+            const form = document.querySelector('#form')
+            form.addEventListener('submit',(e) => {
+                e.preventDefault();
+
+                const newUser = push(userRef);
+
+                set(newUser,{
+                    username : form.elements["username"].value,
+                    age : form.elements["age"].value
+                })
+
+            })
+
+        </script>
+    </body>
+</html>
